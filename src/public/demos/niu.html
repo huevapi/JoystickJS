@@ -1,11 +1,7 @@
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html>
 <head>
-<title></title>
+<title>Niu JAAS Demo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -38,18 +34,8 @@ and open the template in the editor.
 // GLOBALS
 var PLAYERS = {},
 	FIELD_W = 800,
-	FIELD_Y = 600,
-	TICKS = 0;
-
-function tick() {
-	$.each(PLAYERS, function(_id, _player) {
-		_player.x += _player.x_speed;
-		_player.y += _player.y_speed;
-		_player.div.css({top:_player.y+'px',left:_player.x+'px'});
-	});
-	$('#debug').html('Ticks: ' + TICKS++);
-}
-
+	FIELD_Y = 600;
+	
 /*if(js.drawSprite) {
     $('#rainbow')
     .clone()
@@ -60,13 +46,21 @@ function tick() {
 
 $(function() {
   	
-	setInterval(tick, 100);
+	var ticks = 0;
+	setInterval(function() {
+		$.each(PLAYERS, function(_id, _player) {
+			_player.x += _player.x_speed;
+			_player.y += _player.y_speed;
+			_player.div.css({top:_player.y+'px',left:_player.x+'px'});
+		});
+		$('#debug').html('Ticks: ' + ticks++);
+	}, 100);
 	
     var socket = io.connect('http://localhost/api/game');
     socket.on('connect', function () { 
 		socket.emit('create', 'test', 6);
     	socket.on('create ok', function (app_id) {
-    		$('#qr').attr("src", "https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://192.168.1.104:3000/joystick.html?" + app_id);
+    		$('#qr').attr("src", "https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=http://192.168.10.104:3000/pads/analog1.html?" + app_id);
 		});
     	
     	// When a player joins, a new player object is created.
@@ -91,10 +85,17 @@ $(function() {
 			var player = PLAYERS[player_id];
 			switch(action) {
 			case 'stick':
-				player.x_speed = 10 * value.x;
-				player.y_speed = 10 * value.y;
+				player.x_speed = 40 * value.x;
+				player.y_speed = 40 * value.y;
 				break;
 			case 'button_A':
+				$('#rainbow')
+					.clone()
+					.addClass('rainbow')
+					.css({top:player.y+'px',left:player.x+'px'})
+				    .appendTo('#canvas')
+					.fadeIn('fast');
+				break;
 			case 'button_B':
 				break;
 			}

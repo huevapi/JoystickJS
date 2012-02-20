@@ -32,7 +32,7 @@ app.configure('production', function(){
 app.get('/', routes.index);
 app.listen(3000);
 
-/// GAME RELATED.
+/// JAAS RELATED.
 
 var games = {};
 var gcount = 1;
